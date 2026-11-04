@@ -29,7 +29,7 @@ export default defineNuxtConfig({
 		head: {
 			title: 'Rifat Mahmud',
 			htmlAttrs: { lang: 'en' },
-			noscript: [{ children: 'Javascript is required to run this website' }],
+			noscript: [{ innerHTML: 'Javascript is required to run this website' }],
 			meta: [
 				{ name: 'referrer', content: 'no-referrer' },
 				{ name: 'author', content: 'Rifat Mahmud' },
