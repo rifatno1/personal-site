@@ -1,3 +1,9 @@
+/**
+ * server/utils/modifyH3.ts
+ * Fluent wrapper for H3Event in Nitro server routes, providing chainable response methods
+ * (setStatus, setCookie, send, sendEmpty) and cached request body/form parsers.
+ */
+
 declare module 'h3' {
 	interface H3EventContext {
 		modifyH3?: {

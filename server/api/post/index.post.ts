@@ -1,3 +1,12 @@
+/**
+ * server/api/post/index.post.ts
+ * [POST] /api/post
+ * Creates a new article or updates an existing one (Admin only):
+ * - If _id is omitted, inserts a new article with createdAt timestamp and 0 likes
+ * - If _id is provided, updates existing article and stamps modifiedAt timestamp
+ * - Sets/unsets pinned and private flags
+ */
+
 type BodyType = {
 	_id?: string
 	title: string
@@ -26,12 +35,19 @@ export default defineEventHandler(async ev => {
 
 	const { req, res } = modifyH3(ev)
 	try {
+		if (!mongo.client) await mongo.init()
+		if (!mongo.client) return res.sendStatus(503)
+
 		const body: BodyType = await req.parseBody()
 		const validation = ajvValidate(schema, body)
 		if (validation.error) return res.setStatus(400).send(validation)
 
+		if (body._id && !mongo.ObjectId.isValid(body._id)) {
+			return res.setStatus(400).send({ error: true, message: 'Invalid article ID' })
+		}
+
 		const got = await mongo
-			.client!.db('Personal_Site')
+			.client.db('Personal_Site')
 			.collection('Posts')
 			.findOneAndUpdate(
 				{ _id: new mongo.ObjectId(body._id) },
@@ -55,7 +71,7 @@ export default defineEventHandler(async ev => {
 		if (!got) throw Error('Update/Create post failed at [post:/api/post]')
 		return res.send(got)
 	} catch (e) {
-		console.log(e)
+		console.error('[API post create/edit] Error:', e)
 		return res.sendStatus(500)
 	}
 })

@@ -1,17 +1,10 @@
-async function validation(): Promise<boolean> {
-	const tokenP = useCookie('TokenP').value
-	const tokenS = useCookie('TokenS').value
-	const stay = useCookie('Stay').value
-	if (!tokenP || !tokenS || (stay !== 'Yes' && stay !== 'No')) return false
-
-	try {
-		const msg = await aesDecrypt(tokenP, import.meta.env.VITE_PublicKey)
-		if (msg !== 'Personal_Site') return false
-		return true
-	} catch (e) {
-		return false
-	}
-}
+/**
+ * Global Route Middleware #2
+ * Handles route-level authentication guards:
+ * - Redirects unauthorized attempts to access guarded administrative routes (e.g. /contacted)
+ * - Clears credentials upon entering /login or /register
+ * - Synchronizes route meta.admin with user authentication status
+ */
 
 function removeCookie() {
 	const tokenP = useCookie('TokenP')
@@ -23,12 +16,24 @@ function removeCookie() {
 	if (stay.value) stay.value = undefined
 }
 
+// Protected routes that strictly require authenticated admin access
 const guardedRoutesExact = ['/contacted']
-export default defineNuxtRouteMiddleware(async to => {
-	if (to.path === '/login' || to.path === '/register') return removeCookie()
 
-	const isValid = await validation()
+export default defineNuxtRouteMiddleware(async to => {
+	const { checkAuth } = useAuth()
+
+	// Clear active session when visiting sign-in or registration pages
+	if (to.path === '/login' || to.path === '/register') {
+		removeCookie()
+		useAuth().isAdmin.value = false
+		return
+	}
+
+	const isValid = await checkAuth()
 	to.meta.admin = isValid
 
-	if (guardedRoutesExact.includes(to.path) && !isValid) return abortNavigation({ statusCode: 401 })
+	// Guard admin-only routes
+	if (guardedRoutesExact.includes(to.path) && !isValid) {
+		return abortNavigation({ statusCode: 401 })
+	}
 })

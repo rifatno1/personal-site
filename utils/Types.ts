@@ -1,7 +1,43 @@
-export type EachPostType = { _id: string; title: string; section: string; content: string; createdAt: number; modifiedAt?: number; likes: number; private: boolean; pinned: boolean }
+/**
+ * utils/Types.ts
+ * Shared TypeScript type definitions for articles, sections, and contact messages.
+ */
 
-export type EachPostPreviewType = { title: string; section: string; content: string; createdAt: number; modifiedAt?: number; private: boolean; pinned: boolean }
+export type EachPostType = {
+	_id: string
+	title: string
+	section: string
+	content: string
+	createdAt: number
+	modifiedAt?: number
+	likes: number
+	private: boolean
+	pinned: boolean
+}
 
-export type EachSectionType = { section: string; posts: { _id: string; title: string }[] }
+export type EachPostPreviewType = {
+	title: string
+	section: string
+	content: string
+	createdAt: number
+	modifiedAt?: number
+	private: boolean
+	pinned: boolean
+}
 
-export type EachContactType = { name: string; email: string; message: string; _id: string }
+export type EachSectionType = {
+	section: string
+	posts: {
+		_id: string
+		title: string
+		pinned?: boolean
+	}[]
+}
+
+export type EachContactType = {
+	name: string
+	email: string
+	message: string
+	_id: string
+	time?: number
+}

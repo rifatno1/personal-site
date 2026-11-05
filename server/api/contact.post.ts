@@ -1,3 +1,12 @@
+/**
+ * server/api/contact.post.ts
+ * [POST] /api/contact
+ * Handles visitor message submissions from the contact form:
+ * - Validates name, email, message length, and Turnstile response token
+ * - Verifies token with Cloudflare Turnstile API
+ * - Stores message in MongoDB 'Messages' collection
+ */
+
 type BodyType = {
 	name: string
 	email: string
@@ -24,9 +33,17 @@ export default defineEventHandler(async ev => {
 		const validation = ajvValidate(schema, body)
 		if (validation.error) return res.setStatus(400).send(validation)
 
-		if (!(await validateTurnstile(process.env.TurnstileSecretKey!, body.token, req.getIP()))) return res.sendStatus(400)
+		const config = useRuntimeConfig(ev)
+		const turnstileSecretKey = (config.turnstileSecretKey || process.env.TurnstileSecretKey) as string
 
-		await mongo.client!.db('Personal_Site').collection('Messages').insertOne({
+		if (turnstileSecretKey && !(await validateTurnstile(turnstileSecretKey, body.token, req.getIP()))) {
+			return res.setStatus(400).send({ error: true, message: 'Captcha verification failed' })
+		}
+
+		if (!mongo.client) await mongo.init()
+		if (!mongo.client) return res.sendStatus(503)
+
+		await mongo.client.db('Personal_Site').collection('Messages').insertOne({
 			name: body.name,
 			email: body.email,
 			message: body.message,
@@ -35,7 +52,7 @@ export default defineEventHandler(async ev => {
 
 		return res.sendEmpty()
 	} catch (e) {
-		console.log(e)
+		console.error('[API contact] Error:', e)
 		return res.sendStatus(500)
 	}
 })

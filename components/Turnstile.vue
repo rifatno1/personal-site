@@ -1,3 +1,12 @@
+<!--
+  Turnstile.vue
+  Cloudflare Turnstile CAPTCHA component:
+  - Supports 'normal' and 'compact' responsive sizes
+  - Automatically matches light/dark theme
+  - Handles retries if Cloudflare's script is still downloading
+  - Exposes refresh prop for reset on submission
+  - Emits 'token' with verification string
+-->
 <template>
 	<div class="_con" :class="size === 'compact' ? 'compact' : ''">
 		<p class="_p" v-if="loading">
@@ -52,11 +61,11 @@
 	const props = withDefaults(
 		defineProps<{
 			size?: 'compact' | 'normal'
-			theme?: 'light' | 'dark'
+			theme?: 'light' | 'dark' | 'auto'
 			siteKey: string
 			refresh?: number
 		}>(),
-		{ size: 'normal', theme: 'light', refresh: 1 }
+		{ size: 'normal', theme: 'auto', refresh: 1 }
 	)
 	const emit = defineEmits<{ token: [string | null] }>()
 
@@ -66,46 +75,77 @@
 	const checked = ref<boolean>(false)
 	const turnstileID = ref<null | string>(null)
 
+	let checkTimer: any = null
+
+	/**
+	 * Mounts the Cloudflare Turnstile widget into the container.
+	 * Retries up to 25 times if the Cloudflare script is still downloading.
+	 */
 	function renderTurnstile() {
-		if (!(globalThis as any).turnstile) {
-			loading.value = null
-			return
+		if (import.meta.server) return
+
+		let retries = 0
+		function tryRender() {
+			if ((globalThis as any).turnstile) {
+				loading.value = true
+				;(globalThis as any).turnstile.ready(() => {
+					loading.value = false
+					try {
+						turnstileID.value = (globalThis as any).turnstile.render('._turnstile_container', {
+							'sitekey': siteKey.value,
+							'callback': (t: any) => {
+								token.value = t
+							},
+							'expired-callback': () => {
+								token.value = null
+							},
+							'theme': theme.value,
+							'size': size.value === 'compact' ? 'compact' : 'normal'
+						})
+					} catch (err) {
+						console.warn('[Turnstile render error]', err)
+					}
+				})
+			} else if (retries < 25) {
+				retries++
+				checkTimer = setTimeout(tryRender, 200)
+			} else {
+				loading.value = null
+			}
 		}
-		loading.value = true
-		;(globalThis as any).turnstile.ready(() => {
-			loading.value = false
-			turnstileID.value = (globalThis as any).turnstile.render('._turnstile_container', {
-				'sitekey': siteKey.value,
-				'callback': (t: any) => {
-					token.value = t
-				},
-				'expired-callback': () => {
-					token.value = null
-				},
-				'theme': theme.value === 'dark' ? 'dark' : 'light',
-				'size': size.value === 'compact' ? 'compact' : 'normal'
-			})
-		})
+
+		tryRender()
 	}
 
+	/**
+	 * Cleans up the turnstile instance on unmount
+	 */
 	function removeTurnstile() {
-		if (!(globalThis as any).turnstile) {
-			loading.value = null
-			return
-		}
+		if (checkTimer) clearTimeout(checkTimer)
+		if (!(globalThis as any).turnstile) return
 		if (!turnstileID.value) return
-		;(globalThis as any).turnstile.remove(turnstileID.value)
+		try {
+			;(globalThis as any).turnstile.remove(turnstileID.value)
+		} catch (e) {}
 		turnstileID.value = null
 		token.value = null
 	}
 
+	/**
+	 * Resets turnstile state to request a fresh token
+	 */
 	function resetTurnstile() {
-		if (!(globalThis as any).turnstile) {
-			loading.value = null
+		if (checkTimer) clearTimeout(checkTimer)
+		if (!(globalThis as any).turnstile || !turnstileID.value) {
+			renderTurnstile()
 			return
 		}
-		if (!turnstileID.value) return
-		;(globalThis as any).turnstile.reset(turnstileID.value)
+		try {
+			;(globalThis as any).turnstile.reset(turnstileID.value)
+		} catch (e) {
+			removeTurnstile()
+			renderTurnstile()
+		}
 		token.value = null
 	}
 

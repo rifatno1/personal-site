@@ -1,4 +1,11 @@
 /**
+ * utils/aes_gcm.ts
+ * Client and server shared Web Crypto AES-GCM encryption/decryption utilities:
+ * - Derives 256-bit AES-GCM keys via SHA-256 hash
+ * - Uses 12-byte initialization vectors (IV) prefixed to ciphertext
+ */
+
+/**
  * Derives a 256-bit key from the provided key string using SHA-256.
  */
 async function deriveKey(key: string) {
@@ -8,24 +15,24 @@ async function deriveKey(key: string) {
 }
 
 /**
- * Decrypts the text using AES-GCM algorithm using Web Crypto API.
- * @param encryptedText base64
- * @param key
- * @returns utf8
+ * Decrypts text using AES-GCM algorithm via Web Crypto API.
+ * @param encryptedText Base64 encoded string containing 12-byte IV + ciphertext
+ * @param key Plaintext passphrase
+ * @returns Decrypted UTF-8 string
  */
-export async function aesDecrypt(encryptedText: string, key: string) {
+export async function aesDecrypt(encryptedText: string, key: string): Promise<string> {
 	if (!encryptedText || typeof encryptedText !== 'string') throw new Error('[encryptedText] must be a non-empty string.')
 	if (!key || typeof key !== 'string') throw new Error('[key] must be a non-empty string.')
 
-	const key_1 = await deriveKey(key)
+	const derivedKey = await deriveKey(key)
 	const buffer = new Uint8Array(
-		atob(encryptedText /*.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - (encryptedText.length % 4)) % 4)*/)
+		atob(encryptedText)
 			.split('')
 			.map(char => char.charCodeAt(0))
 	)
 	const iv = buffer.slice(0, 12)
 	const encryptedData = buffer.slice(12)
 
-	const decrypted = await globalThis.crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key_1, encryptedData)
+	const decrypted = await globalThis.crypto.subtle.decrypt({ name: 'AES-GCM', iv }, derivedKey, encryptedData)
 	return new TextDecoder().decode(decrypted)
 }

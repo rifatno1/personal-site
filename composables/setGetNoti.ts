@@ -1,5 +1,20 @@
-export type EachNotificationType = { message: string; isError: boolean; key: string; timeoutID: any }
+/**
+ * Lightweight global toast notification store and helper functions.
+ * Supports auto-dismissing timed alerts, manual dismissal, and error states.
+ */
 
+export type EachNotificationType = {
+	message: string
+	isError: boolean
+	key: string
+	timeoutID: any
+}
+
+/**
+ * Pushes a new toast notification onto the global notification stack.
+ * @param message The text content to display
+ * @param isError Whether to display as an error alert (red) or success badge (green)
+ */
 export function setNoti(message: string, isError: boolean = false) {
 	const notifications = useState<EachNotificationType[]>('notifications', () => [])
 
@@ -20,6 +35,9 @@ export function setNoti(message: string, isError: boolean = false) {
 	})
 }
 
+/**
+ * Retrieves the reactive list of active notifications.
+ */
 export function getNoti() {
 	return useState<EachNotificationType[]>('notifications', () => [])
 }

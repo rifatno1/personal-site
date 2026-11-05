@@ -1,3 +1,12 @@
+/**
+ * server/api/register.post.ts
+ * [POST] /api/register
+ * Admin registration request endpoint:
+ * - Validates Turnstile captcha token
+ * - Hashes password using bcrypt with salt rounds = 10
+ * - Inserts admin document with approved: false for administrative review
+ */
+
 import { hashSync } from 'bcrypt'
 
 type BodyType = {
@@ -28,9 +37,17 @@ export default defineEventHandler(async ev => {
 		const validation = ajvValidate(schema, body)
 		if (validation.error) return res.setStatus(400).send(validation)
 
-		if (!(await validateTurnstile(process.env.TurnstileSecretKey!, body.token, req.getIP()))) return res.sendStatus(400)
+		const config = useRuntimeConfig(ev)
+		const turnstileSecretKey = (config.turnstileSecretKey || process.env.TurnstileSecretKey) as string
 
-		const got = await mongo.client!.db('Personal_Site').collection('Admins').findOne({ email: body.email })
+		if (turnstileSecretKey && !(await validateTurnstile(turnstileSecretKey, body.token, req.getIP()))) {
+			return res.setStatus(400).send({ error: true, message: 'Captcha verification failed' })
+		}
+
+		if (!mongo.client) await mongo.init()
+		if (!mongo.client) return res.sendStatus(503)
+
+		const got = await mongo.client.db('Personal_Site').collection('Admins').findOne({ email: body.email })
 
 		if (got) {
 			if (got.approved) return res.send({ status: 'approved' })
@@ -38,7 +55,7 @@ export default defineEventHandler(async ev => {
 		}
 
 		await mongo
-			.client!.db('Personal_Site')
+			.client.db('Personal_Site')
 			.collection('Admins')
 			.insertOne({
 				name: body.name,
@@ -51,7 +68,7 @@ export default defineEventHandler(async ev => {
 
 		return res.send({ status: 'success' })
 	} catch (e) {
-		console.log(e)
+		console.error('[API register] Error:', e)
 		return res.sendStatus(500)
 	}
 })

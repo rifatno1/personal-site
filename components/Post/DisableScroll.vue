@@ -1,16 +1,20 @@
+<!--
+  PostDisableScroll
+  Prevents background document scrolling when a modal or overlay is open.
+  Locks document body overflow smoothly without jitter.
+-->
 <template>
 	<slot />
 </template>
 
 <script setup lang="ts">
-	const scrollPos = ref({ x: 0, y: 0 })
-	const stopScroll = () => globalThis.window.scroll(scrollPos.value.x, scrollPos.value.y)
-
 	onMounted(() => {
-		scrollPos.value.x = globalThis.window.scrollX
-		scrollPos.value.y = globalThis.window.scrollY
-		globalThis.window.addEventListener('scroll', stopScroll)
+		if (import.meta.server) return
+		document.body.style.overflow = 'hidden'
 	})
 
-	onBeforeUnmount(() => globalThis.window.removeEventListener('scroll', stopScroll))
+	onBeforeUnmount(() => {
+		if (import.meta.server) return
+		document.body.style.overflow = ''
+	})
 </script>

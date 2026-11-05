@@ -1,3 +1,9 @@
+/**
+ * server/api/post/index.delete.ts
+ * [DELETE] /api/post
+ * Deletes an article by its ObjectId (Admin only).
+ */
+
 type BodyType = {
 	_id: string
 }
@@ -16,18 +22,23 @@ export default defineEventHandler(async ev => {
 
 	const { req, res } = modifyH3(ev)
 	try {
+		if (!mongo.client) await mongo.init()
+		if (!mongo.client) return res.sendStatus(503)
+
 		const body: BodyType = await req.parseBody()
 		const validation = ajvValidate(schema, body)
 		if (validation.error) return res.setStatus(400).send(validation)
 
+		if (!mongo.ObjectId.isValid(body._id)) return res.setStatus(400).send({ error: true, message: 'Invalid ID' })
+
 		await mongo
-			.client!.db('Personal_Site')
+			.client.db('Personal_Site')
 			.collection('Posts')
 			.deleteOne({ _id: new mongo.ObjectId(body._id) })
 
 		return res.sendEmpty()
 	} catch (e) {
-		console.log(e)
+		console.error('[API post delete] Error:', e)
 		return res.sendStatus(500)
 	}
 })

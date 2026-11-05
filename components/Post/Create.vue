@@ -1,7 +1,20 @@
+<!--
+  PostCreate.vue
+  Wrapper component toggling between the floating "New Article" action button
+  and the full-screen Create/Edit modal dialog.
+-->
 <template>
 	<slot>
-		<PostCreateEdit type="create" v-if="creating" @toggle-create-edit="() => (creating = !creating)" @update-data="d => emit('update-data', d)" />
-		<PostCreateBtn v-if="!creating" @toggle-creating="() => (creating = !creating)" />
+		<PostCreateEdit
+			type="create"
+			v-if="creating"
+			@toggle-create-edit="() => (creating = !creating)"
+			@update-data="d => emit('update-data', d)"
+		/>
+		<PostCreateBtn
+			v-if="!creating"
+			@toggle-creating="() => (creating = !creating)"
+		/>
 	</slot>
 </template>
 

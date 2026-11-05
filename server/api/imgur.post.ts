@@ -1,3 +1,13 @@
+/**
+ * server/api/imgur.post.ts
+ * [POST] /api/imgur
+ * Handles image uploads to Imgur API (Admin only):
+ * - Reads and auto-refreshes OAuth2 access tokens stored in MongoDB 'Imgur' collection
+ * - Automatically ensures a dedicated 'Personal Site' album exists on the account
+ * - Validates file buffer size (< 2MB) and supported MIME types (JPEG, PNG, GIF, WebP)
+ * - Returns direct public image link on success
+ */
+
 type ImgurSecretsType = {
 	type: 'imgur_secrets'
 	client_id: string
@@ -8,6 +18,9 @@ type ImgurSecretsType = {
 	valid_till?: number
 }
 
+/**
+ * Finds or creates the 'Personal Site' album on the user's Imgur account
+ */
 async function getAlbumID(access_token: string) {
 	try {
 		const all_albums = await $fetch<{
@@ -35,11 +48,14 @@ async function getAlbumID(access_token: string) {
 
 		return got.data?.id || false
 	} catch (e) {
-		console.log(e)
+		console.error('[Imgur album error]', e)
 		return false
 	}
 }
 
+/**
+ * Retrieves Imgur OAuth secrets from MongoDB
+ */
 async function getSecrets() {
 	const keyArr = ['client_id', 'client_secret', 'access_token', 'refresh_token']
 	const got = await mongo.client!.db('Personal_Site').collection<ImgurSecretsType>('Imgur').findOne({ type: 'imgur_secrets' })
@@ -58,6 +74,9 @@ async function getSecrets() {
 	return got
 }
 
+/**
+ * Refreshes an expired Imgur OAuth access token
+ */
 async function refreshToken(secrets: ImgurSecretsType) {
 	const got = await $fetch<{
 		access_token: string
@@ -77,7 +96,7 @@ async function refreshToken(secrets: ImgurSecretsType) {
 		})(),
 		responseType: 'json'
 	}).catch(e => {
-		console.log(e)
+		console.error('[Imgur token refresh error]', e)
 		return null
 	})
 	if (!got) return null
@@ -100,6 +119,9 @@ async function refreshToken(secrets: ImgurSecretsType) {
 	return { access_token: got.access_token, refresh_token: got.refresh_token, valid_till: valid_till }
 }
 
+/**
+ * Uploads image buffer to Imgur API under the target album
+ */
 async function uploadImage(access_token: string, file: Buffer, album_id: string) {
 	try {
 		const got = await $fetch<{
@@ -129,7 +151,7 @@ async function uploadImage(access_token: string, file: Buffer, album_id: string)
 
 		return got
 	} catch (e) {
-		console.log(e)
+		console.error('[Imgur uploadImage error]', e)
 		return false
 	}
 }
@@ -138,7 +160,7 @@ type BodyType = {
 	files: {
 		image: {
 			buffer: Buffer
-			type: 'image/jpeg' | 'image/jpg' | 'image/gif' | 'image/png' | 'image/apng' | 'image/tiff'
+			type: 'image/jpeg' | 'image/jpg' | 'image/gif' | 'image/png' | 'image/apng' | 'image/tiff' | 'image/webp'
 			filename: string
 		}
 	}
@@ -161,7 +183,7 @@ const schema = {
 						},
 						type: {
 							type: 'string',
-							enum: ['image/jpeg', 'image/jpg', 'image/gif', 'image/png', 'image/apng', 'image/tiff']
+							enum: ['image/jpeg', 'image/jpg', 'image/gif', 'image/png', 'image/apng', 'image/tiff', 'image/webp']
 						},
 						filename: { type: 'string' }
 					},
@@ -200,16 +222,7 @@ export default defineEventHandler(async ev => {
 
 		return res.send({ status: 'success', link: imageData.data.link })
 	} catch (e) {
-		console.log(e)
+		console.error('[API imgur] Error:', e)
 		return res.sendStatus(500)
 	}
 })
-
-// must manually add these data to the database in Imgur for it to work.
-// {
-//   "type": "imgur_secrets",
-//   "client_id": "secret client id",
-//   "client_secret": "secret client secret",
-//   "access_token": "secret access token",
-//   "refresh_token": "secret refresh token",
-// }
