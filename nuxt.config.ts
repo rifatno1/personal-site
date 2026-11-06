@@ -81,7 +81,7 @@ export default defineNuxtConfig({
 					type: 'text/javascript'
 				},
 				// Cloudflare Turnstile explicit rendering SDK
-				{ src: 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit', async: true, defer: true }
+				{ src: 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit' }
 			]
 		}
 	},
