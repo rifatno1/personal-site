@@ -31,8 +31,8 @@ export default defineEventHandler(async ev => {
 
 		if (!mongo.ObjectId.isValid(body._id)) return res.setStatus(400).send({ error: true, message: 'Invalid ID' })
 
-		await mongo
-			.client.db('Personal_Site')
+		await mongo.client
+			.db('Personal_Site')
 			.collection('Posts')
 			.deleteOne({ _id: new mongo.ObjectId(body._id) })
 

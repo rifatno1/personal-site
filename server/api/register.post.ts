@@ -54,8 +54,8 @@ export default defineEventHandler(async ev => {
 			return res.send({ status: 'not_approved' })
 		}
 
-		await mongo
-			.client.db('Personal_Site')
+		await mongo.client
+			.db('Personal_Site')
 			.collection('Admins')
 			.insertOne({
 				name: body.name,

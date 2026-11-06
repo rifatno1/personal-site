@@ -15,8 +15,8 @@ export default defineEventHandler(async ev => {
 		if (!mongo.client) await mongo.init()
 		if (!mongo.client) return res.send([])
 
-		const got = await mongo
-			.client.db('Personal_Site')
+		const got = await mongo.client
+			.db('Personal_Site')
 			.collection('Posts')
 			.aggregate([
 				{

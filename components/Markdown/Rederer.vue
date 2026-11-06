@@ -10,8 +10,7 @@
 		ref="contentContainer"
 		v-html="html"
 		class="markdown-content prose prose-zinc dark:prose-invert max-w-none text-zinc-800 dark:text-zinc-200 prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-zinc-900 dark:prose-headings:text-zinc-50 prose-a:font-medium prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-a:no-underline hover:prose-a:underline prose-code:rounded-md prose-code:px-1.5 prose-code:py-0.5 prose-code:text-xs sm:prose-code:text-sm prose-code:font-mono prose-code:bg-zinc-100 dark:prose-code:bg-zinc-800/80 prose-code:border prose-code:border-zinc-200/80 dark:prose-code:border-zinc-700/60 prose-code:before:content-none prose-code:after:content-none prose-pre:bg-zinc-950 dark:prose-pre:bg-zinc-900/90 prose-pre:border prose-pre:border-zinc-800/80 prose-pre:rounded-2xl prose-pre:p-4 prose-img:rounded-2xl prose-img:border prose-img:border-zinc-200/80 dark:prose-img:border-zinc-800/80 prose-blockquote:border-l-4 prose-blockquote:border-indigo-500 prose-blockquote:bg-indigo-50/40 dark:prose-blockquote:bg-indigo-950/20 prose-blockquote:p-4 prose-blockquote:rounded-r-xl prose-blockquote:not-italic"
-		@click="handleContentClick"
-	></div>
+		@click="handleContentClick"></div>
 </template>
 
 <style>

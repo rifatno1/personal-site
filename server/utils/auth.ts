@@ -37,8 +37,8 @@ export default async (ev: import('h3').H3Event): Promise<boolean> => {
 		if (!mongo.client) await mongo.init()
 		if (!mongo.client) return false
 
-		const got = await mongo
-			.client.db('Personal_Site')
+		const got = await mongo.client
+			.db('Personal_Site')
 			.collection('Admins')
 			.findOne({ _id: new mongo.ObjectId(_id) })
 		if (!got || got.credentialsChangedAt?.toString?.() !== credentialsChangedAt) return false

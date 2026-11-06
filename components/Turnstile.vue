@@ -10,11 +10,13 @@
 <template>
 	<div class="_con" :class="size === 'compact' ? 'compact' : ''">
 		<p class="_p" v-if="loading">
-			Captcha loading. <br />
+			Captcha loading.
+			<br />
 			Please wait.
 		</p>
 		<p class="_p" v-else-if="loading === null">
-			Captcha Error. <br />
+			Captcha Error.
+			<br />
 			Refresh this page.
 		</p>
 		<input class="_input" :class="size === 'compact' ? 'compact' : ''" type="checkbox" required :checked="checked" />

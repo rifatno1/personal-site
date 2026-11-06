@@ -46,8 +46,8 @@ export default defineEventHandler(async ev => {
 			return res.setStatus(400).send({ error: true, message: 'Invalid article ID' })
 		}
 
-		const got = await mongo
-			.client.db('Personal_Site')
+		const got = await mongo.client
+			.db('Personal_Site')
 			.collection('Posts')
 			.findOneAndUpdate(
 				{ _id: new mongo.ObjectId(body._id) },

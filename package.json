@@ -7,7 +7,8 @@
 		"dev": "nuxt dev",
 		"generate": "nuxt generate",
 		"preview": "nuxt preview",
-		"postinstall": "nuxt prepare"
+		"postinstall": "nuxt prepare",
+		"format": "prettier --write ."
 	},
 	"dependencies": {
 		"@tailwindcss/typography": "^0.5.20",
@@ -20,6 +21,7 @@
 		"markdown-it": "^14.3.3",
 		"mongodb": "^6.22.0",
 		"nuxt": "^4.6.4",
+		"prettier": "^3.9.10",
 		"tailwindcss": "^4.3.4"
 	}
 }

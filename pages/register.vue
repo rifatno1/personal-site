@@ -13,72 +13,27 @@
 			<div class="absolute -top-16 -right-16 w-36 h-36 bg-indigo-500/10 dark:bg-indigo-500/20 rounded-full blur-2xl pointer-events-none"></div>
 
 			<div class="flex flex-col gap-1.5 text-center">
-				<div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/60 flex items-center justify-center mx-auto text-xl mb-1">
-					📝
-				</div>
-				<h1 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-					Create Admin Account
-				</h1>
-				<p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
-					Submit your details to request publishing privileges
-				</p>
+				<div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/60 flex items-center justify-center mx-auto text-xl mb-1">📝</div>
+				<h1 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">Create Admin Account</h1>
+				<p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">Submit your details to request publishing privileges</p>
 			</div>
 
 			<form class="flex flex-col gap-4" @submit.prevent="submit">
 				<div class="flex flex-col gap-1.5">
 					<label for="name" class="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Full Name</label>
-					<input
-						type="text"
-						name="name"
-						id="name"
-						required
-						placeholder="Your name"
-						minlength="3"
-						maxlength="64"
-						class="w-full rounded-xl px-4 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-						v-model="body.name"
-						:disabled="sending"
-					/>
+					<input type="text" name="name" id="name" required placeholder="Your name" minlength="3" maxlength="64" class="w-full rounded-xl px-4 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" v-model="body.name" :disabled="sending" />
 				</div>
 
 				<div class="flex flex-col gap-1.5">
 					<label for="email" class="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Email Address</label>
-					<input
-						type="email"
-						name="email"
-						id="email"
-						required
-						placeholder="name@example.com"
-						minlength="8"
-						maxlength="256"
-						class="w-full rounded-xl px-4 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-						v-model="body.email"
-						:disabled="sending"
-					/>
+					<input type="email" name="email" id="email" required placeholder="name@example.com" minlength="8" maxlength="256" class="w-full rounded-xl px-4 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" v-model="body.email" :disabled="sending" />
 				</div>
 
 				<div class="flex flex-col gap-1.5">
 					<label for="pass" class="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Password</label>
 					<div class="relative">
-						<input
-							:type="showPassword ? 'text' : 'password'"
-							name="pass"
-							id="pass"
-							required
-							placeholder="Minimum 8 characters"
-							minlength="8"
-							maxlength="256"
-							class="w-full rounded-xl pl-4 pr-10 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-							v-model="body.pass"
-							:disabled="sending"
-							@input="comparePass"
-						/>
-						<button
-							type="button"
-							@click="showPassword = !showPassword"
-							class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 text-xs cursor-pointer select-none"
-							tabindex="-1"
-						>
+						<input :type="showPassword ? 'text' : 'password'" name="pass" id="pass" required placeholder="Minimum 8 characters" minlength="8" maxlength="256" class="w-full rounded-xl pl-4 pr-10 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" v-model="body.pass" :disabled="sending" @input="comparePass" />
+						<button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 text-xs cursor-pointer select-none" tabindex="-1">
 							{{ showPassword ? 'Hide' : 'Show' }}
 						</button>
 					</div>
@@ -86,38 +41,20 @@
 
 				<div class="flex flex-col gap-1.5">
 					<label for="re_pass" class="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Confirm Password</label>
-					<input
-						type="password"
-						name="re_pass"
-						id="re_pass"
-						required
-						placeholder="Re-enter password"
-						minlength="8"
-						maxlength="256"
-						class="w-full rounded-xl px-4 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-						v-model="body.re_pass"
-						:disabled="sending"
-						@input="comparePass"
-					/>
+					<input type="password" name="re_pass" id="re_pass" required placeholder="Re-enter password" minlength="8" maxlength="256" class="w-full rounded-xl px-4 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" v-model="body.re_pass" :disabled="sending" @input="comparePass" />
 				</div>
 
 				<div class="flex justify-center my-1">
 					<Turnstile :site-key="siteKey" @token="v => (token = v)" :refresh="refreshID" :size="turnstileSize" />
 				</div>
 
-				<button
-					type="submit"
-					class="w-full py-3 px-4 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/25 transition-all disabled:opacity-50 cursor-pointer"
-					:disabled="sending"
-				>
+				<button type="submit" class="w-full py-3 px-4 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/25 transition-all disabled:opacity-50 cursor-pointer" :disabled="sending">
 					{{ sending ? 'Submitting Registration...' : 'Register' }}
 				</button>
 
 				<p class="text-xs text-center text-zinc-500 dark:text-zinc-400 mt-2">
 					Already have an account?
-					<NuxtLink to="/login" class="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
-						Sign In here
-					</NuxtLink>
+					<NuxtLink to="/login" class="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">Sign In here</NuxtLink>
 				</p>
 			</form>
 		</div>

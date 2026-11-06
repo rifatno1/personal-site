@@ -14,11 +14,7 @@
 			<PostCreateEditPreview v-if="previewing" @toggle-previewing="() => (previewing = !previewing)" :post-data="postData" />
 			<PostUploadImage v-else-if="uploading_image" @toggle-uploading-image="uploading_image = !uploading_image" />
 
-			<form
-				v-else
-				class="w-full max-h-[92vh] overflow-y-auto max-w-3xl p-6 sm:p-8 bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-zinc-800/90 rounded-3xl shadow-2xl flex flex-col gap-5 text-zinc-900 dark:text-zinc-100"
-				@submit.prevent="submit"
-			>
+			<form v-else class="w-full max-h-[92vh] overflow-y-auto max-w-3xl p-6 sm:p-8 bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-zinc-800/90 rounded-3xl shadow-2xl flex flex-col gap-5 text-zinc-900 dark:text-zinc-100" @submit.prevent="submit">
 				<!-- Modal Header -->
 				<div class="flex items-center justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800/80">
 					<div class="flex items-center gap-2">
@@ -27,12 +23,7 @@
 							{{ props.type === 'create' ? 'Create New Article' : 'Edit Article' }}
 						</h2>
 					</div>
-					<button
-						type="button"
-						class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
-						@click="() => emit('toggle-create-edit')"
-						aria-label="Close dialog"
-					>
+					<button type="button" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer" @click="() => emit('toggle-create-edit')" aria-label="Close dialog">
 						<IconClose class="w-4 h-4" />
 					</button>
 				</div>
@@ -42,30 +33,13 @@
 					<!-- Title -->
 					<div class="flex flex-col gap-1.5">
 						<label for="title" class="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Title</label>
-						<input
-							type="text"
-							id="title"
-							placeholder="e.g. Building High-Performance Nuxt 4 Applications"
-							class="w-full rounded-xl px-4 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-							required
-							v-model="postData.title"
-							:disabled="sending"
-						/>
+						<input type="text" id="title" placeholder="e.g. Building High-Performance Nuxt 4 Applications" class="w-full rounded-xl px-4 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" required v-model="postData.title" :disabled="sending" />
 					</div>
 
 					<!-- Section / Category -->
 					<div class="flex flex-col gap-1.5">
 						<label for="section" class="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Section / Category</label>
-						<input
-							type="text"
-							id="section"
-							placeholder="e.g. Web Development, Tutorials, Projects"
-							class="w-full rounded-xl px-4 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-							required
-							v-model="postData.section"
-							:disabled="sending"
-							list="list_section"
-						/>
+						<input type="text" id="section" placeholder="e.g. Web Development, Tutorials, Projects" class="w-full rounded-xl px-4 py-2.5 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" required v-model="postData.section" :disabled="sending" list="list_section" />
 						<datalist v-if="sidebarData?.length" id="list_section">
 							<option :value="d" v-for="d in sidebarData.map(el => el.section)">{{ d }}</option>
 						</datalist>
@@ -74,22 +48,12 @@
 					<!-- Options: Pin & Private -->
 					<div class="flex items-center gap-6 py-1">
 						<label class="flex items-center gap-2 cursor-pointer select-none">
-							<input
-								type="checkbox"
-								id="pinned"
-								v-model="postData.pinned"
-								class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 accent-indigo-600 cursor-pointer"
-							/>
+							<input type="checkbox" id="pinned" v-model="postData.pinned" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 accent-indigo-600 cursor-pointer" />
 							<span class="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Pin to top</span>
 						</label>
 
 						<label class="flex items-center gap-2 cursor-pointer select-none">
-							<input
-								type="checkbox"
-								id="private"
-								v-model="postData.private"
-								class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 accent-indigo-600 cursor-pointer"
-							/>
+							<input type="checkbox" id="private" v-model="postData.private" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 accent-indigo-600 cursor-pointer" />
 							<span class="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Private article (only visible to admin)</span>
 						</label>
 					</div>
@@ -110,53 +74,21 @@
 							</div>
 						</div>
 
-						<textarea
-							id="post"
-							ref="textareaRef"
-							class="w-full min-h-[16rem] rounded-2xl p-4 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-mono focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition leading-relaxed resize-y"
-							placeholder="Write your article using Markdown..."
-							required
-							v-model="postData.content"
-							:disabled="sending"
-							@keydown="keydownHandler"
-						></textarea>
+						<textarea id="post" ref="textareaRef" class="w-full min-h-[16rem] rounded-2xl p-4 bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-sm font-mono focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition leading-relaxed resize-y" placeholder="Write your article using Markdown..." required v-model="postData.content" :disabled="sending" @keydown="keydownHandler"></textarea>
 					</div>
 				</div>
 
 				<!-- Footer Controls -->
 				<div class="flex items-center justify-between pt-3 border-t border-zinc-100 dark:border-zinc-800/80 flex-wrap gap-3">
-					<button
-						type="button"
-						class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 inline-flex items-center gap-1.5 cursor-pointer"
-						:disabled="sending"
-						@click="uploading_image = !uploading_image"
-					>
+					<button type="button" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 inline-flex items-center gap-1.5 cursor-pointer" :disabled="sending" @click="uploading_image = !uploading_image">
 						<span>📷</span>
 						<span>Upload image via Imgur</span>
 					</button>
 
 					<div class="flex items-center gap-2">
-						<button
-							type="button"
-							class="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-700/80 transition-colors cursor-pointer"
-							:disabled="sending"
-							@click="() => (previewing = !previewing)"
-						>
-							Preview
-						</button>
-						<button
-							type="button"
-							class="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
-							:disabled="sending"
-							@click="() => emit('toggle-create-edit')"
-						>
-							Cancel
-						</button>
-						<button
-							type="submit"
-							class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-500/20 transition-all disabled:opacity-50 cursor-pointer"
-							:disabled="sending"
-						>
+						<button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-700/80 transition-colors cursor-pointer" :disabled="sending" @click="() => (previewing = !previewing)">Preview</button>
+						<button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer" :disabled="sending" @click="() => emit('toggle-create-edit')">Cancel</button>
+						<button type="submit" class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-500/20 transition-all disabled:opacity-50 cursor-pointer" :disabled="sending">
 							{{ sending ? 'Saving...' : props.type === 'create' ? 'Publish Article' : 'Save Changes' }}
 						</button>
 					</div>

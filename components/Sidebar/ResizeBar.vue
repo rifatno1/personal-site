@@ -4,14 +4,7 @@
   Supports both mouse and touch events with clamped min/max boundaries (220px to 480px).
 -->
 <template>
-	<div
-		class="h-full w-2 -ml-1 cursor-col-resize flex items-center justify-center hover:bg-indigo-500/20 active:bg-indigo-500/30 transition-colors shrink-0 group select-none z-10"
-		@mousedown.prevent="resizeStart"
-		@touchstart.prevent="resizeStartTouch"
-		title="Drag to resize sidebar"
-		role="separator"
-		aria-orientation="vertical"
-	>
+	<div class="h-full w-2 -ml-1 cursor-col-resize flex items-center justify-center hover:bg-indigo-500/20 active:bg-indigo-500/30 transition-colors shrink-0 group select-none z-10" @mousedown.prevent="resizeStart" @touchstart.prevent="resizeStartTouch" title="Drag to resize sidebar" role="separator" aria-orientation="vertical">
 		<div class="w-0.5 h-8 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-indigo-500 transition-colors"></div>
 	</div>
 </template>

@@ -21,22 +21,16 @@
 
 			<div class="flex items-center justify-between flex-wrap gap-4">
 				<div class="flex items-center gap-3">
-					<div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-lg">
-						#
-					</div>
+					<div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-lg">#</div>
 					<div>
 						<h1 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
 							{{ section }}
 						</h1>
-						<p class="text-xs text-zinc-500 dark:text-zinc-400">
-							Articles, tutorials, and notes in this category
-						</p>
+						<p class="text-xs text-zinc-500 dark:text-zinc-400">Articles, tutorials, and notes in this category</p>
 					</div>
 				</div>
 
-				<span v-if="data?.result" class="px-3 py-1 rounded-full text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
-					{{ data.result.length }} {{ data.result.length === 1 ? 'article' : 'articles' }}
-				</span>
+				<span v-if="data?.result" class="px-3 py-1 rounded-full text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">{{ data.result.length }} {{ data.result.length === 1 ? 'article' : 'articles' }}</span>
 			</div>
 		</div>
 
@@ -54,43 +48,23 @@
 
 		<!-- Posts List -->
 		<div v-else-if="data?.result?.length" class="flex flex-col gap-6">
-			<PostView
-				v-for="d in data.result"
-				:key="d._id"
-				:postData="d"
-				@update-data="updateData"
-				@delete-data="deleteData"
-			/>
+			<PostView v-for="d in data.result" :key="d._id" :postData="d" @update-data="updateData" @delete-data="deleteData" />
 		</div>
 
 		<!-- Empty State -->
 		<div v-else class="text-center py-20 px-4 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800 bg-white/40 dark:bg-zinc-900/40 flex flex-col items-center gap-3">
 			<p class="text-zinc-800 dark:text-zinc-200 font-semibold">No posts in #{{ section }}</p>
 			<p class="text-xs text-zinc-400 dark:text-zinc-500">Check back later or explore other sections in the sidebar.</p>
-			<NuxtLink to="/" class="mt-2 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white">
-				Return to all posts
-			</NuxtLink>
+			<NuxtLink to="/" class="mt-2 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white">Return to all posts</NuxtLink>
 		</div>
 
 		<!-- Pagination -->
 		<div class="flex items-center justify-between pt-3" v-if="!pending && (page > 1 || data?.hasMore)">
-			<button
-				:disabled="page <= 1"
-				@click="() => router.push({ query: { page: page - 1 === 1 ? undefined : page - 1 } })"
-				class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition shadow-xs cursor-pointer"
-			>
-				← Previous Page
-			</button>
+			<button :disabled="page <= 1" @click="() => router.push({ query: { page: page - 1 === 1 ? undefined : page - 1 } })" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition shadow-xs cursor-pointer">← Previous Page</button>
 
 			<span class="text-xs text-zinc-500 dark:text-zinc-400 font-semibold">Page {{ page }}</span>
 
-			<button
-				:disabled="!data?.hasMore"
-				@click="() => router.push({ query: { page: page + 1 } })"
-				class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition shadow-xs cursor-pointer"
-			>
-				Next Page →
-			</button>
+			<button :disabled="!data?.hasMore" @click="() => router.push({ query: { page: page + 1 } })" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none transition shadow-xs cursor-pointer">Next Page →</button>
 		</div>
 	</div>
 
@@ -123,13 +97,10 @@
 	})
 
 	// Fetches category articles with dynamic URL getter and string key
-	const { data, pending, error, refresh } = await useFetch<{ hasMore: boolean; result: EachPostType[] }>(
-		() => `/api/posts?section=${encodeURIComponent(section.value)}&page=${page.value}`,
-		{
-			key: `posts-section-${section.value}-page-${page.value}`,
-			watch: [section, page]
-		}
-	)
+	const { data, pending, error, refresh } = await useFetch<{ hasMore: boolean; result: EachPostType[] }>(() => `/api/posts?section=${encodeURIComponent(section.value)}&page=${page.value}`, {
+		key: `posts-section-${section.value}-page-${page.value}`,
+		watch: [section, page]
+	})
 
 	function updateData(d: EachPostType) {
 		if (pending.value || !data.value) return

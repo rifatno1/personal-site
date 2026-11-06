@@ -48,12 +48,14 @@ export default defineEventHandler(async ev => {
 			else if (process.env.PerPage) perPage = Number(process.env.PerPage)
 		} catch (e) {}
 
-		const sectionMatch = query.section ? {
-			$or: [{ section: query.section }, { section: decodeURIComponent(query.section) }]
-		} : {}
+		const sectionMatch = query.section
+			? {
+					$or: [{ section: query.section }, { section: decodeURIComponent(query.section) }]
+				}
+			: {}
 
-		const got = await mongo
-			.client.db('Personal_Site')
+		const got = await mongo.client
+			.db('Personal_Site')
 			.collection('Posts')
 			.find({ ...sectionMatch, ...(!authorized ? { private: { $ne: true } } : {}) })
 			.sort({ ...(query.section ? { pinned: -1 } : {}), createdAt: -1 })

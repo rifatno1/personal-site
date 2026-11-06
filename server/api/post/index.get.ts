@@ -32,8 +32,8 @@ export default defineEventHandler(async ev => {
 		if (!mongo.ObjectId.isValid(query._id)) return res.sendStatus(404)
 
 		const decodedSection = decodeURIComponent(query.section)
-		const got = await mongo
-			.client.db('Personal_Site')
+		const got = await mongo.client
+			.db('Personal_Site')
 			.collection('Posts')
 			.findOne({
 				_id: new mongo.ObjectId(query._id),

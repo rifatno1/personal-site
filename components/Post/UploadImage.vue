@@ -8,42 +8,22 @@
   - Returns markdown-ready embed code with quick copy button
 -->
 <template>
-	<form
-		class="w-full max-h-[90vh] overflow-y-auto max-w-lg p-6 sm:p-8 bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-zinc-800/90 rounded-3xl shadow-2xl flex flex-col gap-5 text-zinc-900 dark:text-zinc-100"
-		@submit.prevent="send"
-	>
+	<form class="w-full max-h-[90vh] overflow-y-auto max-w-lg p-6 sm:p-8 bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-zinc-800/90 rounded-3xl shadow-2xl flex flex-col gap-5 text-zinc-900 dark:text-zinc-100" @submit.prevent="send">
 		<!-- Header -->
 		<div class="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
 			<div class="flex items-center gap-2">
 				<span class="text-lg">📷</span>
 				<h2 class="font-bold text-lg">Upload Image (Imgur)</h2>
 			</div>
-			<button
-				type="button"
-				class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer"
-				@click="() => emit('toggle-uploading-image')"
-				aria-label="Close image uploader"
-			>
+			<button type="button" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer" @click="() => emit('toggle-uploading-image')" aria-label="Close image uploader">
 				<IconClose class="w-4 h-4" />
 			</button>
 		</div>
 
 		<!-- File selection / Drag and Drop -->
 		<div v-if="!link" class="flex flex-col gap-3">
-			<div
-				class="border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-indigo-500 rounded-2xl p-6 text-center flex flex-col items-center justify-center gap-3 transition-colors cursor-pointer bg-zinc-50 dark:bg-zinc-900/50"
-				@click="triggerFileInput"
-				@dragover.prevent
-				@drop.prevent="handleDrop"
-			>
-				<input
-					ref="fileInputRef"
-					type="file"
-					accept="image/jpeg,image/jpg,image/gif,image/png,image/apng,image/webp"
-					class="hidden"
-					@change="handleImage"
-					:disabled="sending"
-				/>
+			<div class="border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-indigo-500 rounded-2xl p-6 text-center flex flex-col items-center justify-center gap-3 transition-colors cursor-pointer bg-zinc-50 dark:bg-zinc-900/50" @click="triggerFileInput" @dragover.prevent @drop.prevent="handleDrop">
+				<input ref="fileInputRef" type="file" accept="image/jpeg,image/jpg,image/gif,image/png,image/apng,image/webp" class="hidden" @change="handleImage" :disabled="sending" />
 
 				<div v-if="previewSrc" class="relative group">
 					<img :src="previewSrc" alt="Preview" class="max-h-40 rounded-xl object-contain shadow-md" />
@@ -63,39 +43,19 @@
 		<div v-else class="flex flex-col gap-3 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60">
 			<p class="text-xs font-semibold text-emerald-800 dark:text-emerald-300">✓ Image uploaded successfully!</p>
 			<div class="flex items-center gap-2">
-				<input
-					type="text"
-					readonly
-					:value="link"
-					class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-xs font-mono select-all"
-				/>
-				<button
-					type="button"
-					class="shrink-0 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition cursor-pointer"
-					@click="copyLink"
-				>
-					Copy
-				</button>
+				<input type="text" readonly :value="link" class="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-xs font-mono select-all" />
+				<button type="button" class="shrink-0 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition cursor-pointer" @click="copyLink">Copy</button>
 			</div>
-			<p class="text-[11px] text-zinc-500">Insert markdown: <code class="font-mono bg-zinc-200/60 dark:bg-zinc-800 px-1 py-0.5 rounded">![Image description]({{ link }})</code></p>
+			<p class="text-[11px] text-zinc-500">
+				Insert markdown:
+				<code class="font-mono bg-zinc-200/60 dark:bg-zinc-800 px-1 py-0.5 rounded">![Image description]({{ link }})</code>
+			</p>
 		</div>
 
 		<!-- Actions -->
 		<div class="flex justify-end gap-2 pt-3 border-t border-zinc-100 dark:border-zinc-800">
-			<button
-				type="button"
-				class="px-4 py-2 rounded-xl text-xs font-medium text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer"
-				:disabled="sending"
-				@click="() => emit('toggle-uploading-image')"
-			>
-				Close
-			</button>
-			<button
-				v-if="!link"
-				type="submit"
-				class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/20 transition disabled:opacity-50 cursor-pointer"
-				:disabled="sending || !imageFile"
-			>
+			<button type="button" class="px-4 py-2 rounded-xl text-xs font-medium text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer" :disabled="sending" @click="() => emit('toggle-uploading-image')">Close</button>
+			<button v-if="!link" type="submit" class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/20 transition disabled:opacity-50 cursor-pointer" :disabled="sending || !imageFile">
 				{{ sending ? 'Uploading...' : 'Upload Image' }}
 			</button>
 		</div>

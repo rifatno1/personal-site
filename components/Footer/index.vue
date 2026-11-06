@@ -13,18 +13,10 @@
 			</div>
 
 			<div class="flex items-center gap-4 text-zinc-500 dark:text-zinc-400">
-				<a href="https://github.com/RifatMahmudno-1" target="_blank" rel="noopener noreferrer" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-					GitHub
-				</a>
-				<a href="https://discord.com/users/715938370840166433" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-					Discord
-				</a>
-				<NuxtLink to="/about" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-					About
-				</NuxtLink>
-				<NuxtLink to="/contact" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-					Contact
-				</NuxtLink>
+				<a href="https://github.com/RifatMahmudno-1" target="_blank" rel="noopener noreferrer" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">GitHub</a>
+				<a href="https://discord.com/users/715938370840166433" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Discord</a>
+				<NuxtLink to="/about" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">About</NuxtLink>
+				<NuxtLink to="/contact" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Contact</NuxtLink>
 			</div>
 
 			<div class="flex items-center gap-1.5 text-[11px] text-zinc-400 dark:text-zinc-500">

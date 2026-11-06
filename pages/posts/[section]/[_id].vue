@@ -12,20 +12,13 @@
 <template>
 	<div class="flex flex-col gap-6 relative">
 		<!-- Scroll Reading Progress Bar -->
-		<div
-			class="fixed top-0 left-0 right-0 h-1 bg-indigo-600 z-[100] transition-all duration-100 ease-out origin-left pointer-events-none"
-			:style="{ width: `${scrollProgress}%` }"
-		></div>
+		<div class="fixed top-0 left-0 right-0 h-1 bg-indigo-600 z-[100] transition-all duration-100 ease-out origin-left pointer-events-none" :style="{ width: `${scrollProgress}%` }"></div>
 
 		<!-- Breadcrumbs Navigation -->
 		<nav class="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 flex-wrap" aria-label="Breadcrumb">
-			<NuxtLink to="/" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium">
-				All Articles
-			</NuxtLink>
+			<NuxtLink to="/" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium">All Articles</NuxtLink>
 			<span class="text-zinc-300 dark:text-zinc-700">/</span>
-			<NuxtLink :to="`/posts/${encodeURIComponent(section)}`" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium">
-				#{{ section }}
-			</NuxtLink>
+			<NuxtLink :to="`/posts/${encodeURIComponent(section)}`" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium">#{{ section }}</NuxtLink>
 			<span class="text-zinc-300 dark:text-zinc-700">/</span>
 			<span class="text-zinc-800 dark:text-zinc-200 truncate font-semibold max-w-[18rem]">{{ data?.title || 'Article' }}</span>
 		</nav>
@@ -45,26 +38,23 @@
 		</div>
 
 		<!-- Single Article View -->
-		<PostView
-			v-else-if="data"
-			:post-data="data"
-			@update-data="updatePostData"
-			@delete-data="deletePostData"
-			:only-one="true"
-			:no-view="true"
-		/>
+		<PostView v-else-if="data" :post-data="data" @update-data="updatePostData" @delete-data="deletePostData" :only-one="true" :no-view="true" />
 
 		<!-- Not Found State -->
 		<div v-else class="text-center py-20 px-4 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800 bg-white/40 dark:bg-zinc-900/40 flex flex-col items-center gap-3">
 			<p class="text-zinc-800 dark:text-zinc-200 font-semibold">Article not found</p>
 			<p class="text-xs text-zinc-400 dark:text-zinc-500">The article you requested could not be located or may have been deleted.</p>
-			<NuxtLink to="/" class="mt-2 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white">
-				Return to all articles
-			</NuxtLink>
+			<NuxtLink to="/" class="mt-2 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white">Return to all articles</NuxtLink>
 		</div>
 
 		<!-- Admin Create Modal -->
-		<PostCreate @update-data="() => { if (refreshSidebar) refreshSidebar.value = true }" v-if="isAdmin" />
+		<PostCreate
+			@update-data="
+				() => {
+					if (refreshSidebar) refreshSidebar.value = true
+				}
+			"
+			v-if="isAdmin" />
 	</div>
 </template>
 
@@ -100,12 +90,9 @@
 	})
 
 	// Fetches article details by ID and section with explicit string key
-	const { data, pending, error, refresh } = await useFetch<EachPostType>(
-		() => `/api/post?_id=${id.value}&section=${encodeURIComponent(section.value)}`,
-		{
-			key: `post-${id.value}`
-		}
-	)
+	const { data, pending, error, refresh } = await useFetch<EachPostType>(() => `/api/post?_id=${id.value}&section=${encodeURIComponent(section.value)}`, {
+		key: `post-${id.value}`
+	})
 
 	function updatePostData(d: EachPostType) {
 		if (d.section === section.value && d._id === id.value) {

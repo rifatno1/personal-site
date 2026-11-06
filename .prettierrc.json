@@ -7,5 +7,6 @@
 	"singleQuote": true,
 	"trailingComma": "none",
 	"useTabs": true,
-	"vueIndentScriptAndStyle": true
+	"vueIndentScriptAndStyle": true,
+	"htmlWhitespaceSensitivity": "ignore"
 }
